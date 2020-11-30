@@ -44,7 +44,7 @@
 #include "cybsp.h"
 #include "cy_retarget_io.h"
 
-#include "ipc_def.h"
+#include "ipc_communication.h"
 
 #include <stdio.h>
 
@@ -55,8 +55,8 @@
 #define BTN_MSG_STOP    2u
 
 #define SEND_IPC_MSG(x) ipc_msg.cmd = x; \
-                        Cy_IPC_Pipe_SendMessage(CY_IPC_EP_CYPIPE_CM0_ADDR, \
-                                                CY_IPC_EP_CYPIPE_CM4_ADDR, \
+                        Cy_IPC_Pipe_SendMessage(USER_IPC_PIPE_EP_ADDR_CM0, \
+                                                USER_IPC_PIPE_EP_ADDR_CM4, \
                                                 (void *) &ipc_msg, 0);     
 
 /****************************************************************************
@@ -70,10 +70,10 @@ void button_isr_handler(void *arg, cyhal_gpio_event_t event);
 *****************************************************************************/
 /* IPC structure to be sent to CM0+ */
 ipc_msg_t ipc_msg = {               
-    .clientId = IPC_CM4_TO_CM0_CLIENT_ID,
-    .userCode = 0,
-    .intrMask = CY_SYS_CYPIPE_INTR_MASK,
-    .cmd      = IPC_CMD_INIT,
+    .client_id  = IPC_CM4_TO_CM0_CLIENT_ID,
+    .cpu_status = 0,
+    .intr_mask  = USER_IPC_PIPE_INTR_MASK,
+    .cmd        = IPC_CMD_INIT,
 };
 
 /* Message variables */
@@ -91,6 +91,9 @@ cyhal_resource_inst_t mcwdt_0 =
 int main(void)
 {
     cy_rslt_t result;
+
+    /* Init the IPC communication for CM4 */
+    setup_ipc_communication_cm4();
 
     /* Initialize the device and board peripherals */
     result = cybsp_init() ;
@@ -115,7 +118,7 @@ int main(void)
     cyhal_gpio_register_callback(CYBSP_USER_BTN, button_isr_handler, NULL);
 
     /* Register the Message Callback */
-    Cy_IPC_Pipe_RegisterCallback(CY_IPC_EP_CYPIPE_ADDR,
+    Cy_IPC_Pipe_RegisterCallback(USER_IPC_PIPE_EP_ADDR,
                                  cm4_msg_callback,
                                  IPC_CM0_TO_CM4_CLIENT_ID);   
 
@@ -140,7 +143,7 @@ int main(void)
             msg_flag = false;
 
             /* Print random number received from CM0+ */
-            printf(" 0x%x\n\r", (unsigned int) msg_value);
+            printf(" 0x%.8x\n\r", (unsigned int) msg_value);
         }
 
         /* Check if the button was pressed */

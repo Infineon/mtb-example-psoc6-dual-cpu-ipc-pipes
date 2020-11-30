@@ -40,7 +40,7 @@
 *******************************************************************************/
 
 #include "cy_pdl.h"
-#include "ipc_def.h"
+#include "ipc_communication.h"
 
 /****************************************************************************
 * Constants
@@ -78,11 +78,11 @@ const cy_stc_mcwdt_config_t mcwdt_cfg =
 volatile uint8_t msg_cmd = 0;
 
 ipc_msg_t ipc_msg = {              /* IPC structure to be sent to CM4  */
-    .clientId = IPC_CM0_TO_CM4_CLIENT_ID,
-    .userCode = 0,
-    .intrMask = CY_SYS_CYPIPE_INTR_MASK,
-    .cmd      = IPC_CMD_STATUS,
-    .value    = 0
+    .client_id  = IPC_CM0_TO_CM4_CLIENT_ID,
+    .cpu_status = 0,
+    .intr_mask   = USER_IPC_PIPE_INTR_MASK,
+    .cmd        = IPC_CMD_STATUS,
+    .value      = 0
 };
 
 /****************************************************************************
@@ -95,11 +95,14 @@ int main(void)
 {
     uint32_t random_number;
 
+    /* Init the IPC communication for CM0+ */
+    setup_ipc_communication_cm0();
+
     /* Enable global interrupts */
     __enable_irq();
 
     /* Register callback to handle messages from CM4 */
-    Cy_IPC_Pipe_RegisterCallback(CY_IPC_EP_CYPIPE_ADDR,
+    Cy_IPC_Pipe_RegisterCallback(USER_IPC_PIPE_EP_ADDR,
                                  cm0p_msg_callback,
                                  IPC_CM4_TO_CM0_CLIENT_ID);
 
@@ -147,8 +150,8 @@ int main(void)
                 ipc_msg.value = random_number;
 
                 /* Send the random number to CM4 to be printed */
-                Cy_IPC_Pipe_SendMessage(CY_IPC_EP_CYPIPE_CM4_ADDR,
-                                        CY_IPC_EP_CYPIPE_CM0_ADDR,
+                Cy_IPC_Pipe_SendMessage(USER_IPC_PIPE_EP_ADDR_CM4,
+                                        USER_IPC_PIPE_EP_ADDR_CM0,
                                         (uint32_t *) &ipc_msg, NULL);          
                 break;
 

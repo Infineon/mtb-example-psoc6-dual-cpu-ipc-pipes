@@ -1,8 +1,8 @@
 # PSoC 6 MCU: Dual-CPU IPC Pipes
 
-This example demonstrates how to use the inter-processor communication (IPC) driver to implement a message pipe in PSoC 6 MCU. The pipe is used to send messages between CPUs.
+This example demonstrates how to use the inter-processor communication (IPC) driver to implement a message pipe in PSoC® 6 MCU. The pipe is used to send messages between CPUs.
 
-For instructions on how to develop dual-CPU applications, see  "PSoC 6 MCU Dual-CPU Development" in [AN215656](https://www.cypress.com/AN215656) – *PSoC 6 MCU Dual-CPU System Design*.
+See the "PSoC 6 MCU Dual-CPU Development" section in [AN215656](https://www.cypress.com/AN215656) – *PSoC 6 MCU Dual-CPU System Design* for instructions on how to develop dual-CPU applications.
 
 ## Overview
 
@@ -10,13 +10,22 @@ In this example, the CM0+ CPU generates 32-bit random numbers periodically using
 
 ## Requirements
 
-- [ModusToolbox™ software](https://www.cypress.com/products/modustoolbox-software-environment) v2.1
+- [ModusToolbox® software](https://www.cypress.com/products/modustoolbox-software-environment) v2.2  
+    
+    **Note:** This code example version requires ModusToolbox software version 2.2 or later and is not backward compatible with v2.1 or older versions. If you can't move to ModusToolbox v2.2, please use the latest compatible version of this example: [latest-v1.X](https://github.com/cypresssemiconductorco/mtb-example-psoc6-dual-cpu-pic-sema/tree/latest-v1.X).  
+- Board Support Package (BSP) minimum required version: 2.0.0  
 - Programming Language: C
 - Associated Parts: All [PSoC 6 MCU](http://www.cypress.com/PSoC6) parts with dual CPUs
 
-## Supported Kits
+## Supported Toolchains (make variable 'TOOLCHAIN')
 
-- [PSoC 6 Wi-Fi BT Prototyping Kit](https://www.cypress.com/CY8CPROTO-062-4343W) (CY8CPROTO-062-4343W) - Default target
+- GNU Arm® Embedded Compiler v9.3.1 (GCC_ARM) - Default value of `TOOLCHAIN`
+- Arm compiler v6.11 (ARM)
+- IAR C/C++ compiler v8.42.2 (IAR)
+
+## Supported Kits (make variable 'TARGET')
+
+- [PSoC 6 Wi-Fi BT Prototyping Kit](https://www.cypress.com/CY8CPROTO-062-4343W) (CY8CPROTO-062-4343W) - Default value of `TARGET`
 - [PSoC 6 WiFi-BT Pioneer Kit](https://www.cypress.com/CY8CKIT-062-WiFi-BT) (CY8CKIT-062-WIFI-BT)
 - [PSoC 6 BLE Pioneer Kit](https://www.cypress.com/CY8CKIT-062-BLE) (CY8CKIT-062-BLE)
 - [PSoC 6 BLE Prototyping Kit](https://www.cypress.com/CY8CPROTO-063-BLE) (CY8CPROTO-063-BLE)
@@ -29,7 +38,7 @@ In this example, the CM0+ CPU generates 32-bit random numbers periodically using
 
 This example uses the board's default configuration. See the kit user guide to ensure that the board is configured correctly.
 
-**Note**: The PSoC 6 BLE Pioneer Kit (CY8CKIT-062-BLE) and the PSoC 6 WiFi-BT Pioneer Kit (CY8CKIT-062-WIFI-BT) ship with KitProg2 installed. The ModusToolbox software requires KitProg3. Before using this code example, make sure that the board is upgraded to KitProg3. The tool and instructions are available in the [Firmware Loader](https://github.com/cypresssemiconductorco/Firmware-loader) GitHub repository. If you do not upgrade, you will see an error like "unable to find CMSIS-DAP device" or "KitProg firmware is out of date".
+**Note:** The PSoC 6 BLE Pioneer Kit (CY8CKIT-062-BLE) and the PSoC 6 WiFi-BT Pioneer Kit (CY8CKIT-062-WIFI-BT) ship with KitProg2 installed. The ModusToolbox software requires KitProg3. Before using this code example, make sure that the board is upgraded to KitProg3. The tool and instructions are available in the [Firmware Loader](https://github.com/cypresssemiconductorco/Firmware-loader) GitHub repository. If you do not upgrade, you will see an error like "unable to find CMSIS-DAP device" or "KitProg firmware is out of date".
 
 ## Software Setup
 
@@ -39,25 +48,27 @@ Install a terminal emulator if you don't have one. Instructions in this document
 
 ### In Eclipse IDE for ModusToolbox:
 
-1. Click the **New Application** link in the Quick Panel (or, use **File** > **New** > **ModusToolbox Application**).
+1. Click the **New Application** link in the **Quick Panel** (or, use **File** > **New** > **ModusToolbox Application**).
 
 2. Pick a kit supported by the code example from the list shown in the **Project Creator - Choose Board Support Package (BSP)** dialog.
 
-   When you select a supported kit, the example is reconfigured automatically to work with the kit. To work with a different supported kit later, use the **Library Manager** to choose the BSP for the supported kit. You can use the Library Manager to select or update the BSP and firmware libraries used in this application. 
-   
-   To access the Library Manager, right-click the application name from the Project Workspace window in the IDE, and select **ModusToolbox** > **Library Manager** (or access it from the **Quick Panel**).
+   When you select a supported kit, the example is reconfigured automatically to work with the kit. To work with a different supported kit later, use the [Library Manager](https://www.cypress.com/ModusToolboxLibraryManager) to choose the BSP for the supported kit. You can use the Library Manager to select or update the BSP and firmware libraries used in this application. To access the Library Manager, click on the link from the Quick Panel. 
 
    You can also just start the application creation process again and select a different kit.
 
    If you want to use the application for a kit not listed here, you may need to update the source files. If the kit does not have the required resources, the application may not work.
 
-3. In the **Project Creator - Select Application** dialog, choose the example.
+3. In the **Project Creator - Select Application** dialog, choose the example by enabling the checkbox.
 
-4. Optionally, update the **Application Name** and **Location** fields with the application name and local path where the application is created.
+4. Optionally, change the suggested **New Application Name**.
 
-5. Click **Create** to complete the application creation process.
+5. Enter the local path in the **Application(s) Root Path** field to indicate where the application needs to be created. 
 
-For more details, see the Eclipse IDE for ModusToolbox User Guide: *{ModusToolbox install directory}/ide_{version}/docs/mt_ide_user_guide.pdf*.
+   Applications that can share libraries can be placed in the same root path.
+
+6. Click **Create** to complete the application creation process.
+
+For more details, see the [Eclipse IDE for ModusToolbox User Guide](https://www.cypress.com/MTBEclipseIDEUserGuide) (locally available at *{ModusToolbox install directory}/ide_{version}/docs/mt_ide_user_guide.pdf*).
 
 ### In Command-line Interface (CLI):
 
@@ -65,7 +76,9 @@ For more details, see the Eclipse IDE for ModusToolbox User Guide: *{ModusToolbo
 
 2. Open a CLI terminal and navigate to the application folder.
 
-   On Linux and macOS, you can use any terminal application. On Windows, navigate to the modus-shell directory (*{ModusToolbox install directory}/tools_\<version>/modus-shell*) and run *Cygwin.bat*.
+   On Linux and macOS, you can use any terminal application. On Windows, open the **modus-shell** app from the Start menu.
+
+   **Note:** Ensure that the *deps* folder contains the required BSP file (*TARGET_xxx.mtb*) corresponding to the TARGET. Use the Library Manager (`make modlibs` command) to select and download the BSP file. If the selected kit does not have the required resources or is not [supported](#supported-kits-make-variable-target), the application may not work. 
 
 3. Import the required libraries by executing the `make getlibs` command in the *cm4_app* folder.
 
@@ -77,11 +90,11 @@ For more details, see the Eclipse IDE for ModusToolbox User Guide: *{ModusToolbo
 
 3. Follow the instructions displayed in the terminal to create or import the application as an IDE project.
 
-For more details, see the "Exporting to IDEs" section of the ModusToolbox User Guide: *{ModusToolbox install directory}/ide_{version}/docs/mtb_user_guide.pdf*.
+For more details, see the "Exporting to IDEs" section of the [ModusToolbox User Guide](https://www.cypress.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox install directory}/ide_{version}/docs/mtb_user_guide.pdf*.
 
 ## Operation
 
-1. Connect the board to your PC using the provided USB cable through the KitProg3 USB connector.
+1. Connect the board to your PC using the provided USB cable through the USB connector.
 
 2. Open a terminal program and select the KitProg3 COM port. Set the serial port parameters to 8N1 and 115200 baud.
 
@@ -91,7 +104,7 @@ For more details, see the "Exporting to IDEs" section of the ModusToolbox User G
 
       1. Select the application project in the Project Explorer.
 
-      2. In the **Quick Panel**, scroll down, and click **\<Application Name> Program (KitProg3)**.
+      2. In the **Quick Panel**, scroll down, and click **\<Application Name> Program (KitProg3_MiniProg4)**.
 
    - **Using CLI:**
 
@@ -104,12 +117,10 @@ For more details, see the "Exporting to IDEs" section of the ModusToolbox User G
       ```
       make program TARGET=CY8CPROTO-062-4343W TOOLCHAIN=GCC_ARM
       ```
-      
-      **Note:** Before building the application, ensure that the *cm4_app/deps* folder contains the BSP file (*TARGET_xxx.lib*) corresponding to the TARGET. Execute the `make getlibs` command in the *cm4_app* folder to fetch the BSP contents before building the application.
 
-   After programming, the application starts automatically. Confirm that "IPC Pipes Example" and other text is displayed on the UART terminal.
+4. After programming, the application starts automatically. Confirm that "IPC Pipes Example" and other text is displayed on the UART terminal.
 
-4. Press the user button on the kit for a few seconds. The terminal prints random numbers as shown in Figure 1. Messages are printed while the button is pressed on every second. Once the button is released, it stops.
+5. Press the user button on the kit for a few seconds. The terminal prints random numbers as shown in Figure 1. Messages are printed while the button is pressed on every second. Once the button is released, it stops.
 
    **Figure 1. Terminal Message**
 
@@ -117,20 +128,23 @@ For more details, see the "Exporting to IDEs" section of the ModusToolbox User G
 
 ## Debugging
 
-You can debug the example to step through the code. In the IDE, use the **\<Application Name> Debug (KitProg3)** configuration in the **Quick Panel**. For more details, see the "Program and Debug" section in the Eclipse IDE for ModusToolbox User Guide: *{ModusToolbox install directory}/ide_{version}/docs/mt_ide_user_guide.pdf*.
+You can debug the example to step through the code. In the IDE, use the **\<Application Name> Debug (KitProg3_MiniProg4)** configuration in the **Quick Panel**. For more details, see the "Program and Debug" section in the [Eclipse IDE for ModusToolbox User Guide](https://www.cypress.com/MTBEclipseIDEUserGuide).
+
+**Note:** **(Only while debugging)** On the CM4 CPU, some code in `main()` may execute before the debugger halts at the beginning of `main()`. This means that some code executes twice - before the debugger stops execution, and again after the debugger resets the program counter to the beginning of `main()`. See [KBA231071](https://community.cypress.com/docs/DOC-21143) to learn about this and for the workaround.
+
 
 ## Design and Implementation
 
 In this code example, the CM4 CPU is the primary CPU, which is responsible to initialize the system. To avoid any access to uninitialized hardware, the CM0+ waits for CM4 to complete the system initialization by waiting for an IPC command. This code example handles four types of IPC commands:
 
-- `IPC_CMD_INIT`: CM0+ waits for this command to initialize
-- `IPC_CMD_START`: CM0+ waits for this command to enable a watchdog timer and the Crypto block
-- `IPC_CMD_STOP`: CM0+ waits for this command to disable a watchdog timer and the Crypto block
-- `IPC_CMD_STATUS`: CM4 waits for this command to print a number to the terminal
+- `IPC_CMD_INIT`: CM0+ waits for this command to initialize.
+- `IPC_CMD_START`: CM0+ waits for this command to enable a watchdog timer and the Crypto block.
+- `IPC_CMD_STOP`: CM0+ waits for this command to disable a watchdog timer and the Crypto block.
+- `IPC_CMD_STATUS`: CM4 waits for this command to print a number to the terminal.
     
 The CM0+ CPU uses a watchdog timer to periodically wake itself  up from sleep. Once it wakes up, it generates a 32-bit random number using the crypto block and sends it to the CM4 CPU. 
 
-The CM4 CPU checks if the user has pressed the kit button. On press, it informs CM0+ to start creating random numbers. On release, it instructs CM0+ to stop creating random numbers. When CM4 receives a message from CM0+, it parses it and prints the random number to the terminal.
+The CM4 CPU checks if the user has pressed the kit button. When a button press is detected, CM4 informs CM0+ to start creating random numbers. When the button is released, CM4 instructs CM0+ to stop creating random numbers. When CM4 receives a message from CM0+, it parses it and prints the random number to the terminal.
 
    **Figure 2. Firmware Flowchart**
 
@@ -143,16 +157,22 @@ This application has a different folder structure because it contains the firmwa
     |-- cm0p_app/           # CM0+ Application Folder
         |-- main.c
         |-- Makefile
+        |-- deps/           # All dependencies Folder for CM0+
     |-- cm4_app/            # CM4 Application Folder
         |-- main.c
         |-- Makefile
-        |-- deps/           # All dependencies folder (including libraries for CM0+)
+        |-- deps/           # All dependencies Folder for CM4
     |-- shared/             # Shared Folder for CM0+ and CM4
         |-- include/        # Shared header files
-        |-- libs/           # All downloaded libraries for CM0+ and CM4
+        |-- source          # Shared source files
         |-- linker_script/  # Contains linker scripts for the ARM/GCC_ARM/IAR toolchains
-
+        
 When using the default BSP settings provided by the TARGET folder, it allocates only 8192 bytes of RAM and flash for the CM0+ CPU. This example requires more memory for CM0+; therefore, a custom linker script is required, which is located at *shared/linker_script*.
+
+
+### IPC Communication
+
+This code example uses a user pipe. The shared folder contains the implementation of a custom initialization of the system pipes, system semaphores and user pipes. Each CPU has its own initialization function. Note that the Makefile of both CPUs adds *CY_IPC_DEFAULT_CFG_DISABLE=1* in the DEFINES variable. This disables the default IPC configuration that comes with the BSP. 
 
 ### Resources and Settings
 
@@ -160,7 +180,6 @@ When using the default BSP settings provided by the TARGET folder, it allocates 
 | Resource  |  Alias/Object     |    Purpose     |
 | :------- | :------------    | :------------ |
 | GPIO (HAL)    | CYBSP_USER_BTN         | User button to start/stop creating random numbers |
-| UART (PDL) | UART_RES | To print messages to the console |
 | UART (HAL) | cy_retarget_io_uart_obj | UART HAL object used by Retarget I/O for printing to the console |
 | MCWDT (PDL) | MCWDT_HW | Watchdog timer to wake up CM0+ CPU periodically |
 | CRYPTO (PDL) | CRYPTO | To generate random numbers |
@@ -183,9 +202,9 @@ When using the default BSP settings provided by the TARGET folder, it allocates 
 | [CY8CKIT-062S2-43012](https://www.cypress.com/CY8CKIT-062S2-43012) PSoC 62S2 Wi-Fi BT Pioneer Kit | [CY8CPROTO-062S3-4343W](https://www.cypress.com/CY8CPROTO-062S3-4343W) PSoC 62S3 Wi-Fi BT Prototyping Kit |
 | [CYW9P62S1-43438EVB-01](https://www.cypress.com/CYW9P62S1-43438EVB-01) PSoC 62S1 Wi-Fi BT Pioneer Kit | [CYW9P62S1-43012EVB-01](https://www.cypress.com/CYW9P62S1-43012EVB-01) PSoC 62S1 Wi-Fi BT Pioneer Kit |                                                              |
 | **Libraries**                                                 |                                                              |
-| PSoC 6 Peripheral Driver Library (PDL) and docs                    | [psoc6pdl](https://github.com/cypresssemiconductorco/psoc6pdl) on GitHub |
-| Cypress Hardware Abstraction Layer (HAL) Library and docs          | [psoc6hal](https://github.com/cypresssemiconductorco/psoc6hal) on GitHub |
-| RetargetIO - A utility library to retarget the standard input/output (STDIO) messages to a UART port | [retarget-io](https://github.com/cypresssemiconductorco/retarget-io) on GitHub |
+| PSoC 6 Peripheral Driver Library (PDL) and docs  | [psoc6pdl](https://github.com/cypresssemiconductorco/psoc6pdl) on GitHub |
+| Cypress Hardware Abstraction Layer (HAL) Library and docs     | [psoc6hal](https://github.com/cypresssemiconductorco/psoc6hal) on GitHub |
+| Retarget IO - A utility library to retarget the standard input/output (STDIO) messages to a UART port | [retarget-io](https://github.com/cypresssemiconductorco/retarget-io) on GitHub |
 | **Middleware**                                               |                                                              |
 | CapSense® library and docs                                    | [capsense](https://github.com/cypresssemiconductorco/capsense) on GitHub |
 | Links to all PSoC 6 MCU Middleware                           | [psoc6-middleware](https://github.com/cypresssemiconductorco/psoc6-middleware) on GitHub |
@@ -206,6 +225,7 @@ Document Title: *CE230807 - PSoC 6 MCU: Dual-CPU IPC Pipes*
 | Version | Description of Change |
 | ------- | --------------------- |
 | 1.0.0   | New code example      |
+| 2.0.0   | Added support for user pipe. <br>Major update to support ModusToolbox software v2.2. <br>This version is not backward compatible with ModusToolbox software v2.1 |
 
 ------
 

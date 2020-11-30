@@ -7,12 +7,12 @@
 # which files to ignore in whatever form your VCS requires. If you do not check your
 # code into a VCS, you can ignore the .gitignore file.
 
-# ModusToolbox libraries are cloned into this directory, by default
-libs/*
+# ModusToolbox library repos or information about library dependencies
+libs/
 
 # Eclipse IDE for ModusToolbox files
 .metadata/
-.cyignore
+# .cyignore
 # .settings/
 # .cproject
 # .project
@@ -28,7 +28,8 @@ Release/
 *_build/
 
 # Visual Studio Code
-.vscode/*
+openocd.tcl
+.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
