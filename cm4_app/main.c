@@ -115,7 +115,7 @@ int main(void)
 
     /* Initialize the User Button */
     cyhal_gpio_init(CYBSP_USER_BTN, CYHAL_GPIO_DIR_INPUT, CYHAL_GPIO_DRIVE_PULLUP, CYBSP_BTN_OFF);
-    cyhal_gpio_enable_event(CYBSP_USER_BTN, CYHAL_GPIO_IRQ_BOTH, CYHAL_ISR_PRIORITY_DEFAULT, true);
+    cyhal_gpio_enable_event(CYBSP_USER_BTN, CYHAL_GPIO_IRQ_FALL, CYHAL_ISR_PRIORITY_DEFAULT, true);
     cyhal_gpio_register_callback(CYBSP_USER_BTN, button_isr_handler, NULL);
 
     /* Register the Message Callback */
@@ -130,7 +130,7 @@ int main(void)
     IPC Pipes Example \
     ****************** \r\n\n");
 
-    printf("<Press the User Button to Create Random Numbers>\r\n");
+    printf("<Press the User Button once to start random number generation, press again to stop>\r\n");
 
     SEND_IPC_MSG(IPC_CMD_INIT);    
 
@@ -150,19 +150,11 @@ int main(void)
         /* Check if the button was pressed */
         if (button_flag == BTN_MSG_STOP)
         {
-            printf("<---Stop--->\n\r");
             SEND_IPC_MSG(IPC_CMD_STOP);
-            
-            /* Clear flag */
-            button_flag = 0;
         }
         else if (button_flag == BTN_MSG_START)
         {
-            printf("\n\r<---Start-->\n\r");
             SEND_IPC_MSG(IPC_CMD_START);
-            
-            /* Clear flag */
-            button_flag = 0;
         }
     }
 }
@@ -210,13 +202,18 @@ void button_isr_handler(void *arg, cyhal_gpio_event_t event)
 {
     (void) arg;
 
-    if (event & CYHAL_GPIO_IRQ_RISE)
+    if(event & CYHAL_GPIO_IRQ_FALL)
     {
-        button_flag = BTN_MSG_STOP;
-    } 
-    else if (event & CYHAL_GPIO_IRQ_FALL)
-    {
-        button_flag = BTN_MSG_START;
+        if((button_flag == 0) || (button_flag == BTN_MSG_STOP))
+        {
+            printf("<---Start--->\n\r");
+            button_flag = BTN_MSG_START;
+        }
+        else
+        {
+            printf("<---Stop--->\n\r");
+            button_flag = BTN_MSG_STOP;
+        }
     }
 }
 
