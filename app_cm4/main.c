@@ -89,6 +89,12 @@ cyhal_resource_inst_t mcwdt_0 =
     .block_num = 0
 };
 
+cyhal_gpio_callback_data_t cb_data =
+{
+.callback = button_isr_handler,
+.callback_arg = NULL
+};
+
 int main(void)
 {
     cy_rslt_t result;
@@ -116,7 +122,7 @@ int main(void)
     /* Initialize the User Button */
     cyhal_gpio_init(CYBSP_USER_BTN, CYHAL_GPIO_DIR_INPUT, CYHAL_GPIO_DRIVE_PULLUP, CYBSP_BTN_OFF);
     cyhal_gpio_enable_event(CYBSP_USER_BTN, CYHAL_GPIO_IRQ_FALL, CYHAL_ISR_PRIORITY_DEFAULT, true);
-    cyhal_gpio_register_callback(CYBSP_USER_BTN, button_isr_handler, NULL);
+    cyhal_gpio_register_callback(CYBSP_USER_BTN, &cb_data);
 
     /* Register the Message Callback */
     Cy_IPC_Pipe_RegisterCallback(USER_IPC_PIPE_EP_ADDR,
@@ -136,7 +142,7 @@ int main(void)
 
     for (;;)
     {
-        cyhal_system_sleep();
+        cyhal_syspm_sleep();
 
         /* Check if a message was received from CM0+ */
         if (msg_flag)
